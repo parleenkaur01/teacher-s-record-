@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Records</title>
+</head>
+<body>
+    <div id="results"></div>
+    <script>
+        // Fetch the date and password from query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const date = urlParams.get('date');
+        const password = urlParams.get('password');
+
+        // Fetch data from the server
+        fetch(`/retrieve?date=${date}&password=${password}`)
+            .then(response => response.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    let resultHtml = '<h2>Records for ' + date + '</h2>';
+                    resultHtml += '<table border="1"><tr><th>Name</th><th>Subject</th><th>School</th><th>Campus</th><th>Date</th><th>In Time</th><th>Phone Number</th></tr>';
+                    data.forEach(record => {
+                        resultHtml += `<tr>
+                            <td>${record.teacher_name}</td>
+                            <td>${record.subject}</td>
+                            <td>${record.school}</td>
+                            <td>${record.campus}</td>
+                            <td>${record.record_date}</td>
+                            <td>${record.in_time}</td>
+                            <td>${record.phone_number}</td>
+                        </tr>`;
+                    });
+                    resultHtml += '</table>';
+                    document.getElementById('results').innerHTML = resultHtml;
+                } else {
+                    alert(data);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while retrieving the information.');
+            });
+    </script>
+</body>
+</html>
